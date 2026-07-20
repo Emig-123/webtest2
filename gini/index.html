@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>World Income Inequality Dashboard — Emiliano Grieco</title>
+  <meta name="description" content="Interactive dashboard of Gini coefficients across 217 countries (1980–2024), cross-referenced with unemployment, GDP per capita, and education." />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html">Emiliano Grieco</a>
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="index.html" aria-current="page">Income Inequality</a></li>
+          <li><a href="../finra/index.html">Financial Capability</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dash-header">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li>Income Inequality</li>
+      </ol>
+      <h1>World Income Inequality Dashboard</h1>
+      <p class="hero-bio">
+        Gini coefficients for 217 countries, 1980–2024, cross-referenced with unemployment,
+        GDP per capita, and advanced education attainment. Drag the year slider to explore
+        how inequality and its correlates shift over time.
+      </p>
+      <p class="dash-source-note">
+        <span class="dot" aria-hidden="true"></span>
+        Data extracted from the workbook's Power Pivot model (fact_country_year, fact_macro) — 2,402 country-year records.
+      </p>
+    </div>
+  </div>
+
+  <main id="main-content" class="dash-main">
+    <div class="container">
+
+      <div class="filter-bar" role="group" aria-label="Dashboard filters">
+        <div class="filter-field" style="min-width:280px">
+          <label for="yearSlider">Year</label>
+          <div class="year-slider-row">
+            <input type="range" id="yearSlider" min="1980" max="2024" step="1" value="2008" />
+            <span class="filter-value" id="yearValue">2008</span>
+          </div>
+        </div>
+        <button class="filter-reset" id="resetFilters" type="button">Reset to 2008</button>
+      </div>
+
+      <section class="dash-section" aria-labelledby="kpi-heading">
+        <h2 id="kpi-heading" class="sr-only">Key figures for selected year</h2>
+        <div class="kpi-row" id="kpiRow">
+          <div class="card stat-tile">
+            <span class="stat-label">Countries reporting</span>
+            <span class="stat-value skeleton" id="kpiCount">&nbsp;</span>
+            <span class="stat-sub" id="kpiYearLabel1">in 2008</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Average Gini coefficient</span>
+            <span class="stat-value accent skeleton" id="kpiAvg">&nbsp;</span>
+            <span class="stat-sub" id="kpiYearLabel2">in 2008</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Most unequal region</span>
+            <span class="stat-value skeleton" id="kpiRegion">&nbsp;</span>
+            <span class="stat-sub" id="kpiRegionSub">by average Gini</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="trend-heading">
+        <h2 id="trend-heading">Global Trend</h2>
+        <p class="section-desc">Average Gini coefficient across all reporting countries, 1980–2024. The marker highlights the selected year.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>Average Gini coefficient by year</h3>
+              <p class="chart-caption">Unweighted mean across countries reporting data that year</p>
+            </div>
+            <button class="table-toggle" id="trendTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div class="chart-canvas-wrap tall" id="trendCanvasWrap">
+            <canvas id="trendChart" role="img" aria-label="Line chart of average Gini coefficient by year, 1980 to 2024"></canvas>
+          </div>
+          <div id="trendTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="relationships-heading">
+        <h2 id="relationships-heading">Relationships in <span id="relYear">2008</span></h2>
+        <p class="section-desc">Each point is one country reporting data for the selected year. Hover or focus a point for details.</p>
+        <div class="chart-grid">
+          <div class="card chart-card">
+            <div class="chart-card-head">
+              <div>
+                <h3>GDP per capita vs. Gini</h3>
+                <p class="chart-caption">GDP per capita (log scale, current US$) vs. income inequality</p>
+              </div>
+              <button class="table-toggle" id="gdpTableToggle" type="button" aria-pressed="false">View as table</button>
+            </div>
+            <div class="chart-canvas-wrap" id="gdpCanvasWrap">
+              <canvas id="gdpChart" role="img" aria-label="Scatter plot of GDP per capita versus Gini coefficient for the selected year"></canvas>
+              <p class="empty-state" id="gdpEmptyState" hidden></p>
+            </div>
+            <div id="gdpTableWrap" hidden></div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="chart-card-head">
+              <div>
+                <h3>Unemployment vs. advanced education</h3>
+                <p class="chart-caption">Unemployment rate (%) vs. share with advanced education (%)</p>
+              </div>
+              <button class="table-toggle" id="eduTableToggle" type="button" aria-pressed="false">View as table</button>
+            </div>
+            <div class="chart-canvas-wrap" id="eduCanvasWrap">
+              <canvas id="eduChart" role="img" aria-label="Scatter plot of unemployment rate versus advanced education percentage for the selected year"></canvas>
+              <p class="empty-state" id="eduEmptyState" hidden></p>
+            </div>
+            <div id="eduTableWrap" hidden></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="region-heading">
+        <h2 id="region-heading">Inequality by Region</h2>
+        <p class="section-desc">Minimum-to-maximum range of Gini coefficients observed in each region across all years (1980–2024); the marker shows the average. Not affected by the year filter.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>Gini range by region, all years</h3>
+              <p class="chart-caption">Bar spans minimum to maximum observed; marker is the regional average</p>
+            </div>
+            <button class="table-toggle" id="regionTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div id="regionChartWrap">
+            <div class="range-chart skeleton" id="regionChart" style="min-height:260px" aria-label="Range chart of Gini coefficient minimum, average, and maximum by region"></div>
+          </div>
+          <div id="regionTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section">
+        <div class="card notes-card">
+          <h3>About this data</h3>
+          <p>
+            Source measures replicate the workbook's Power Pivot model: <code>fact_country_year</code>
+            (Gini coefficient and unemployment rate by country and year) related to <code>DimCountry</code>
+            (region lookup) and <code>DimYear</code>; <code>fact_macro</code> supplies GDP per capita and
+            advanced education % by country and year via the <code>GDP per Capita</code> and
+            <code>Advanced Education %</code> measures. All aggregation shown here (yearly averages,
+            regional min/max, scatter pairings) is computed client-side from the same row-level extract
+            used by the original PivotTables — nothing is pre-rounded or hard-coded.
+          </p>
+          <ul>
+            <li>A country appears in a given year's scatterplots only if both series have a reported value for that exact year — matching the original CUBEVALUE-driven pivot behavior.</li>
+            <li>Gini coefficients are unitless (0–100 scale); higher values indicate greater income inequality.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card download-card">
+        <div class="download-copy">
+          <h3>Download the original workbook</h3>
+          <p>The full Excel dashboard, including the Power Pivot data model, PivotTables, and native charts this page is based on.</p>
+          <p class="download-meta">GiniCO.xlsx · ~1.3 MB</p>
+        </div>
+        <a class="btn btn-download" href="../assets/downloads/GiniCO.xlsx" download>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download GiniCO.xlsx
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="mailto:griecoemiliano04@gmail.com">Email</a></li>
+        <li><a href="https://www.linkedin.com/in/emilianogrieco" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/Emig-123" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+      <p class="footer-note">&copy; <span id="footer-year"></span> Emiliano Grieco</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/vendor/chart.umd.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script src="../assets/js/gini.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

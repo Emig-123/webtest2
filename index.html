@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Emiliano Grieco — Finance &amp; Data Analytics</title>
+  <meta name="description" content="Portfolio of Emiliano Grieco: interactive data analysis dashboards covering global income inequality and U.S. household financial capability." />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="index.html">Emiliano Grieco</a>
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="gini/index.html">Income Inequality</a></li>
+          <li><a href="finra/index.html">Financial Capability</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero container">
+      <p class="hero-kicker">Finance &amp; Data Analytics</p>
+      <h1>Emiliano Grieco</h1>
+      <p class="hero-bio">
+        Finance and analytics professional focused on turning complex data into clear, practical
+        business decisions. I bring experience in investment research, portfolio analysis, and
+        quantitative problem-solving, with a growing focus on business analytics and data-driven strategy.
+      </p>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="mailto:griecoemiliano04@gmail.com">Email me</a>
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/emilianogrieco" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a class="btn btn-secondary" href="https://github.com/Emig-123" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+    </section>
+
+    <section class="container" aria-labelledby="projects-heading">
+      <div class="section-heading">
+        <h2 id="projects-heading">Selected Projects</h2>
+        <p>
+          Two dashboards originally built in Excel on Power Pivot data models, rebuilt here as
+          interactive web pages backed by the same underlying data. Each page includes a download
+          link for the original workbook.
+        </p>
+      </div>
+
+      <div class="project-grid">
+        <a class="card project-card" href="gini/index.html">
+          <span class="project-card-kicker">Global · Panel Data, 1980–2024</span>
+          <h3>World Income Inequality</h3>
+          <p>
+            Gini coefficients across 217 countries, cross-referenced with unemployment, GDP per
+            capita, and advanced education attainment. Explore the relationship between inequality
+            and economic development by year and region.
+          </p>
+          <div class="project-card-meta">
+            <span class="chip">2,402 country-year records</span>
+            <span class="chip">Power Pivot / DAX</span>
+            <span class="chip">Interactive year slicer</span>
+          </div>
+          <span class="project-card-cta">View dashboard →</span>
+        </a>
+
+        <a class="card project-card" href="finra/index.html">
+          <span class="project-card-kicker">United States · Survey Waves 2009–2021</span>
+          <h3>Household Financial Capability</h3>
+          <p>
+            National Financial Capability Study microdata: emergency savings, debt burden, and
+            financial satisfaction across income, education, employment status, and state, sliced
+            live in the browser.
+          </p>
+          <div class="project-card-meta">
+            <span class="chip">133,086 respondents</span>
+            <span class="chip">Power Pivot / DAX</span>
+            <span class="chip">Year, income &amp; employment filters</span>
+          </div>
+          <span class="project-card-cta">View dashboard →</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="mailto:griecoemiliano04@gmail.com">Email</a></li>
+        <li><a href="https://www.linkedin.com/in/emilianogrieco" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/Emig-123" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+      <p class="footer-note">&copy; <span id="footer-year"></span> Emiliano Grieco</p>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

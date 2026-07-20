@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Household Financial Capability Dashboard — Emiliano Grieco</title>
+  <meta name="description" content="Interactive dashboard of U.S. household financial capability: emergency savings, debt burden, and financial satisfaction by income, education, employment, and state, from the National Financial Capability Study." />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html">Emiliano Grieco</a>
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../gini/index.html">Income Inequality</a></li>
+          <li><a href="index.html" aria-current="page">Financial Capability</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dash-header">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li>Financial Capability</li>
+      </ol>
+      <h1>Household Financial Capability Dashboard</h1>
+      <p class="hero-bio">
+        National Financial Capability Study (NFCS) respondent data, 2009–2021: emergency
+        savings, perceived debt burden, and financial satisfaction across income, education,
+        employment status, and state.
+      </p>
+      <p class="dash-source-note">
+        <span class="dot" aria-hidden="true"></span>
+        Data extracted from the workbook's Power Pivot model (NFCS_Master_Clean1) — 133,086 respondent records.
+      </p>
+    </div>
+  </div>
+
+  <main id="main-content" class="dash-main">
+    <div class="container">
+
+      <div class="filter-bar" role="group" aria-label="Dashboard filters">
+        <div class="filter-field">
+          <label for="yearSelect">Survey year</label>
+          <select id="yearSelect"></select>
+        </div>
+        <div class="filter-field">
+          <label for="incomeSelect">Income bracket</label>
+          <select id="incomeSelect"></select>
+        </div>
+        <div class="filter-field">
+          <label for="employmentSelect">Employment status</label>
+          <select id="employmentSelect"></select>
+        </div>
+        <button class="filter-reset" id="resetFilters" type="button">Reset filters</button>
+      </div>
+
+      <section class="dash-section" aria-labelledby="kpi-heading">
+        <h2 id="kpi-heading" class="sr-only">Key figures for current filter</h2>
+        <div class="kpi-row" id="kpiRow">
+          <div class="card stat-tile">
+            <span class="stat-label">Has an emergency fund</span>
+            <span class="stat-value accent skeleton" id="kpiEf">&nbsp;</span>
+            <div class="heat-scale" style="margin-top:2px">
+              <div class="range-track" style="flex:1;max-width:none">
+                <div class="range-fill" id="kpiEfMeter" style="left:0;width:0%"></div>
+              </div>
+            </div>
+            <span class="stat-sub" id="kpiEfSub">of respondents in this slice</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Income gap</span>
+            <span class="stat-value skeleton" id="kpiIncomeGap">&nbsp;</span>
+            <span class="stat-sub">$150k+ minus &lt;$15k, emergency fund %</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Education gap</span>
+            <span class="stat-value skeleton" id="kpiEduGap">&nbsp;</span>
+            <span class="stat-sub">PostGraduate minus Less than HS, emergency fund %</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="income-heading">
+        <h2 id="income-heading">Emergency Fund by Income</h2>
+        <p class="section-desc">Share of respondents with an emergency fund, by income bracket. Filtered by survey year and employment status only — income is this chart's own axis.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>% with an emergency fund, by income bracket</h3>
+              <p class="chart-caption" id="incomeChartCaption">2021 · Work Part-Time</p>
+            </div>
+            <button class="table-toggle" id="incomeTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div class="chart-canvas-wrap" id="incomeCanvasWrap">
+            <canvas id="incomeChart" role="img" aria-label="Bar chart of percentage with an emergency fund by income bracket"></canvas>
+          </div>
+          <div id="incomeTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="debt-heading">
+        <h2 id="debt-heading">Perceived Debt Burden by Education</h2>
+        <p class="section-desc">Share reporting they have too much debt, by education level, across survey waves. Filtered by income bracket and employment status only — year is this chart's own axis.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>% reporting too much debt, by education level</h3>
+              <p class="chart-caption" id="debtChartCaption">$50k–$74,999 · Work Part-Time</p>
+            </div>
+            <button class="table-toggle" id="debtTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div class="chart-canvas-wrap tall" id="debtCanvasWrap">
+            <canvas id="debtChart" role="img" aria-label="Line chart of percentage reporting too much debt by education level across survey years"></canvas>
+          </div>
+          <div class="chart-legend" id="debtLegend"></div>
+          <div id="debtTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="state-heading">
+        <h2 id="state-heading">Financial Satisfaction by State</h2>
+        <p class="section-desc">Average financial satisfaction (1–10 scale), by state, for the current year / income / employment filter. States with fewer than 5 respondents in this slice are shown as insufficient data.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>Average financial satisfaction by state</h3>
+              <p class="chart-caption" id="stateChartCaption">2021 · $50k–$74,999 · Work Part-Time</p>
+            </div>
+            <div class="cluster" style="gap:8px">
+              <button class="table-toggle" id="stateSortToggle" type="button" aria-pressed="false">Sort by value</button>
+              <button class="table-toggle" id="stateTableToggle" type="button" aria-pressed="false">View as table</button>
+            </div>
+          </div>
+          <div id="stateHeatmapWrap">
+            <div class="heatmap-grid skeleton" id="stateHeatmap" style="min-height:220px"></div>
+            <div class="heat-scale">
+              <span>Lower</span>
+              <span class="heat-scale-bar" aria-hidden="true"></span>
+              <span>Higher</span>
+            </div>
+          </div>
+          <div id="stateTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="corr-heading">
+        <h2 id="corr-heading">Debt Burden vs. Financial Satisfaction</h2>
+        <p class="section-desc">Each point is one state. Same filter as the state map above.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>% too much debt vs. average financial satisfaction, by state</h3>
+              <p class="chart-caption">Pearson correlation computed across plotted states</p>
+            </div>
+            <button class="table-toggle" id="corrTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div class="chart-canvas-wrap" id="corrCanvasWrap">
+            <canvas id="corrChart" role="img" aria-label="Scatter plot of percentage too much debt versus average financial satisfaction by state"></canvas>
+          </div>
+          <div id="corrTableWrap" hidden></div>
+          <div class="stat-box" id="corrStatBox"></div>
+        </div>
+      </section>
+
+      <section class="dash-section">
+        <div class="card notes-card">
+          <h3>About this data</h3>
+          <p>
+            Source measures replicate the workbook's Power Pivot model on <code>NFCS_Master_Clean1</code>:
+            <code>Pct Emergency Fund</code> divides respondents with an emergency fund by all respondents who
+            answered the question; <code>Pct Too Much Debt</code> divides respondents who strongly agree they
+            have too much debt by all respondents in the slice, including non-responses (matching the workbook's
+            DAX measure exactly); <code>Avg Financial Satisfaction</code> is a simple mean on the survey's 1–10 scale.
+            <code>Income Gap</code> and <code>Education Gap</code> compare the top and bottom bracket of their
+            respective dimension while ignoring that dimension's own filter, exactly as the original measures do.
+          </p>
+          <ul>
+            <li>The income and education breakdown charts intentionally ignore the income/education filter for their own dimension, since it is the chart's category axis — this mirrors how the source PivotTables were connected to their slicers.</li>
+            <li>Any slice with fewer than 5 respondents is treated as insufficient data rather than shown as a potentially unstable percentage.</li>
+            <li>All aggregation is computed client-side, in the browser, from the same 133,086-row extract used by the original PivotTables.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card download-card">
+        <div class="download-copy">
+          <h3>Download the original workbook</h3>
+          <p>The full Excel dashboard, including the Power Pivot data model, PivotTables, and native charts this page is based on.</p>
+          <p class="download-meta">Finra_Dashboards_GriecoCopy.xlsx · ~3.6 MB</p>
+        </div>
+        <a class="btn btn-download" href="../assets/downloads/Finra_Dashboards_GriecoCopy.xlsx" download>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Finra_Dashboards_GriecoCopy.xlsx
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="mailto:griecoemiliano04@gmail.com">Email</a></li>
+        <li><a href="https://www.linkedin.com/in/emilianogrieco" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/Emig-123" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+      <p class="footer-note">&copy; <span id="footer-year"></span> Emiliano Grieco</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/vendor/chart.umd.js"></script>
+  <script src="../assets/js/charts.js"></script>
+  <script src="../assets/js/finra.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
