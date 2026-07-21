@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "scenarioName": "Original Workbook Snapshot",
+    "scenarioId": "excel-snapshot-2026-07-20",
+    "note": "Frozen from a single read of the source workbook's live Monte Carlo draw (front-month oil prices generated via NORM.INV(RAND())). This is one simulated 12-month path, not observed market data or a forecast."
+  },
+  "constants": {
+    "spot": 80,
+    "nextFuturesPrice": 76,
+    "monthlyReturn": -0.0526315789473684,
+    "backwardationInput": 0,
+    "backwardationNote": "Displayed in the source workbook but not consumed by any downstream formula in this dependency chain.",
+    "horizonMonths": 12,
+    "monthlyVolume": 1333333.33333333,
+    "fixedPrice": 80,
+    "monthlyVolumeGrid": 1333333,
+    "gridStep": 0.05,
+    "availableLiquidity": 8333333.33333333,
+    "fundingRateAnnual": 0.08,
+    "monthlyFundingRate": 0.00666666666666667,
+    "d3Delivery": 0,
+    "sensitivityVolumeFactor": 1333333.33,
+    "priceMin": 75,
+    "priceMax": 85,
+    "priceStep": 0.5,
+    "hrMin": 0.05,
+    "hrMax": 1.0,
+    "hrStep": 0.05,
+    "lar": -4053994.2271717,
+    "volatility": 0.258645993204221
+  },
+  "path": {
+    "frontPrices": [
+      80.1889729236729,
+      79.844821956589,
+      80.1890934304055,
+      79.9543272916022,
+      80.0888313717621,
+      80.0744017197922,
+      79.8491915568833,
+      80.1621159681674,
+      79.5443435988814,
+      79.8085501301612,
+      79.499385079767,
+      79.9329750533378
+    ]
+  },
+  "excelCrossCheck": {
+    "backwardationSpread": 4.20674127228518,
+    "totalRollPnL": 67307860.3565629,
+    "totalDeliveryPnL": -68458513.581867,
+    "netTotalPnL": -1150653.22530416
+  }
+}

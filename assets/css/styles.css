@@ -852,6 +852,63 @@ table { border-collapse: collapse; width: 100%; }
   background: linear-gradient(to right, var(--seq-100), var(--seq-700));
 }
 
+/* Dense variant: many small tiles (e.g. a 420-cell P&L grid) rather than ~50 state tiles. */
+.heatmap-grid.dense {
+  grid-template-columns: repeat(21, minmax(0, 1fr));
+  gap: 2px;
+}
+.heatmap-grid.dense .heat-tile {
+  min-height: 34px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.heatmap-grid.dense .heat-tile .heat-value {
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+@media (max-width: 720px) {
+  .heatmap-grid.dense { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+}
+.heat-scale-bar.diverging {
+  background: linear-gradient(to right, var(--div-neg), var(--div-mid), var(--div-pos));
+}
+.heatmap-axis-row {
+  display: grid;
+  grid-template-columns: repeat(21, minmax(0, 1fr));
+  gap: 2px;
+  font-size: 0.62rem;
+  color: var(--ink-muted);
+  text-align: center;
+  margin-bottom: var(--sp-1);
+}
+@media (max-width: 720px) {
+  .heatmap-axis-row { display: none; }
+}
+.heatmap-with-axis {
+  display: flex;
+  gap: var(--sp-2);
+}
+.heatmap-row-axis {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.62rem;
+  color: var(--ink-muted);
+  padding-top: 0;
+}
+.heatmap-row-axis span {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+}
+@media (max-width: 720px) {
+  .heatmap-row-axis { display: none; }
+}
+
 /* ==========================================================================
    Range / floating-bar chart (regions)
    ========================================================================== */
@@ -913,6 +970,60 @@ table { border-collapse: collapse; width: 100%; }
 .error-state { color: var(--status-critical); }
 
 /* ==========================================================================
+   Scenario badge (labels simulated/frozen data as such — never presented as live)
+   ========================================================================== */
+.scenario-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-primary);
+  margin-top: var(--sp-3);
+}
+.scenario-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+.scenario-badge strong { font-weight: 700; }
+
+/* ==========================================================================
+   3D isometric surface (canvas) — a supplementary view of the same heatmap
+   data. The heat-tile grid + its table toggle remain the primary accessible
+   representation; this canvas is decorative/illustrative on top of it.
+   ========================================================================== */
+.mg-3d-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--sp-3);
+}
+.mg-3d-wrap {
+  position: relative;
+  min-height: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--page-bg);
+  overflow: hidden;
+}
+.mg-3d-wrap canvas {
+  display: block;
+  width: 100%;
+  height: 320px;
+}
+.mg-3d-caption {
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+  margin-top: var(--sp-2);
+}
+
+/* ==========================================================================
    Download section
    ========================================================================== */
 .download-card {
@@ -940,6 +1051,26 @@ table { border-collapse: collapse; width: 100%; }
 .notes-card h3 { font-size: var(--fs-base); color: var(--ink-primary); margin-bottom: var(--sp-2); }
 .notes-card ul { margin-top: var(--sp-2); }
 .notes-card li { margin-bottom: var(--sp-1); }
+
+/* ==========================================================================
+   Key takeaway callout
+   ========================================================================== */
+.key-takeaway {
+  padding: var(--sp-4) var(--sp-5);
+  border-left: 4px solid var(--accent);
+  font-size: var(--fs-sm);
+  color: var(--ink-secondary);
+}
+.key-takeaway h2 { font-size: var(--fs-lg); color: var(--ink-primary); margin-bottom: var(--sp-3); }
+.key-takeaway p { max-width: none; margin-bottom: var(--sp-3); }
+.key-takeaway p:last-of-type { margin-bottom: 0; }
+.key-takeaway .takeaway-sources {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.key-takeaway .takeaway-sources ul { margin-top: var(--sp-1); padding-left: 1.25em; }
+.key-takeaway .takeaway-sources li { margin-bottom: 0.2em; }
 
 @media (max-width: 640px) {
   .filter-bar { position: static; }

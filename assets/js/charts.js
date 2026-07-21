@@ -54,6 +54,24 @@
     return t2.seq[idx];
   }
 
+  function lerpHex(hexA, hexB, t) {
+    var a = hexA.replace("#", ""), b = hexB.replace("#", "");
+    var ar = parseInt(a.substring(0, 2), 16), ag = parseInt(a.substring(2, 4), 16), ab = parseInt(a.substring(4, 6), 16);
+    var br = parseInt(b.substring(0, 2), 16), bg = parseInt(b.substring(2, 4), 16), bb = parseInt(b.substring(4, 6), 16);
+    var r = Math.round(ar + (br - ar) * t), g = Math.round(ag + (bg - ag) * t), bl = Math.round(ab + (bb - ab) * t);
+    return "#" + [r, g, bl].map(function (v) { return v.toString(16).padStart(2, "0"); }).join("");
+  }
+
+  // Diverging color for a signed magnitude t in [-1, 1]: negative -> --div-neg,
+  // zero -> --div-mid, positive -> --div-pos. Used for signed measures (P&L, deltas)
+  // where the sign itself is the primary signal, never as a stand-in for status colors.
+  function divergingColor(t) {
+    var t2 = tokens();
+    var divNeg = cssVar("--div-neg"), divMid = cssVar("--div-mid"), divPos = cssVar("--div-pos");
+    var clamped = Math.max(-1, Math.min(1, t));
+    return clamped < 0 ? lerpHex(divMid, divNeg, -clamped) : lerpHex(divMid, divPos, clamped);
+  }
+
   function relLuminance(hex) {
     var h = hex.replace("#", "");
     if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
@@ -251,6 +269,7 @@
     tokens: tokens,
     ordinalRamp: ordinalRamp,
     sequentialColor: sequentialColor,
+    divergingColor: divergingColor,
     textOnFill: textOnFill,
     contrastRatio: contrastRatio,
     hexToRgba: hexToRgba,

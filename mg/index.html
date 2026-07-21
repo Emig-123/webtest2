@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Metallgesellschaft Stack-and-Roll Hedging Simulation — Emiliano Grieco</title>
+  <meta name="description" content="Interactive sensitivity heatmap for the Metallgesellschaft stack-and-roll oil hedging case study: net profit/loss across futures price and hedge ratio, from a Monte Carlo simulation frozen as a labeled baseline scenario." />
+  <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../index.html">Emiliano Grieco</a>
+      <nav class="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="../index.html">Home</a></li>
+          <li><a href="../gini/index.html">Income Inequality</a></li>
+          <li><a href="../finra/index.html">Financial Capability</a></li>
+          <li><a href="index.html" aria-current="page">Oil Hedging</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="dash-header">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li><a href="../index.html">Home</a></li>
+        <li>Oil Hedging</li>
+      </ol>
+      <h1>Metallgesellschaft Stack-and-Roll Hedging Simulation</h1>
+      <p class="hero-bio">
+        A sensitivity analysis of the "stack-and-roll" futures hedging strategy at the center of
+        Metallgesellschaft's 1993 oil-hedging losses: net profit/loss across a range of futures
+        prices and hedge ratios, for one simulated 12-month price path.
+      </p>
+      <p class="dash-source-note">
+        <span class="dot" aria-hidden="true"></span>
+        Derived from the workbook's Sensitivity Table dependency chain (StacknRoll Strategy Analysis →
+        Hedge Ratio Analysis → Sensitivity Table) — 420 price / hedge-ratio combinations.
+      </p>
+      <div class="scenario-badge" id="scenarioBadge"></div>
+      <p class="dash-source-note" id="scenarioNote" style="margin-top: var(--sp-2)"></p>
+    </div>
+  </div>
+
+  <main id="main-content" class="dash-main">
+    <div class="container">
+
+      <section class="dash-section" aria-labelledby="takeaway-heading">
+        <div class="card key-takeaway">
+          <h2 id="takeaway-heading">Key Takeaway</h2>
+          <p>
+            Metallgesellschaft's US subsidiary, MG Refining &amp; Marketing (MGRM), sold long-dated
+            fixed-price fuel supply contracts to customers — some running 5 to 10 years — and hedged
+            that exposure with a "stack-and-roll" program: buying large stacks of short-dated NYMEX
+            futures and rolling them forward every month, rather than using illiquid long-dated
+            contracts. At its peak the position was reportedly large enough to represent a meaningful
+            share of total open interest in crude and heating oil futures, which made it hard to
+            unwind quickly once trouble started. The strategy depended on the futures curve staying
+            in backwardation (near-term prices above deferred prices), so each monthly roll would
+            produce a small profit.
+          </p>
+          <p>
+            When oil prices fell sharply in late 1993 and the curve flipped into contango, the
+            stack-and-roll program lost money on every roll — and because futures are marked to
+            market daily, MGRM faced enormous margin calls in cash immediately, while the offsetting
+            gains on its fixed-price delivery contracts wouldn't be realized for years. In other
+            words, the hedge was sized and timed for the wrong horizon: a short-dated instrument
+            standing in for a long-dated exposure. That mismatch turned a paper hedge into a real
+            cash crisis, and Metallgesellschaft's supervisory board unwound the position in December
+            1993 at a widely reported loss of roughly $1.3 billion (other estimates run higher once
+            related contract cancellations are included).
+          </p>
+          <p>
+            Economists still disagree on how to characterize it. Mello &amp; Parsons (1995) argue the
+            maturity mismatch between the short-dated hedge and the long-dated exposure was itself
+            the core design flaw — in effect, a large directional bet on the shape of the futures
+            curve. Culp &amp; Miller (1995) counter that the hedge ratio was reasonable and the program
+            was fundamentally sound; the real mistake was the supervisory board panicking and
+            liquidating the position at the worst possible time, converting a temporary cash-flow
+            squeeze into a permanent loss. Either way, the case is a standard illustration of how a
+            hedge that looks right in aggregate size but wrong in timing can become the source of the
+            risk it was meant to remove — the heatmap below shows the same tension: outcomes are
+            sensitive to both the assumed futures price and the hedge ratio chosen, and a larger
+            hedge does not uniformly reduce exposure, it changes what you're exposed to.
+          </p>
+          <div class="takeaway-sources">
+            Further reading:
+            <ul>
+              <li>Mello, A. &amp; Parsons, J. (1995). <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6104" target="_blank" rel="noopener noreferrer">"Maturity Structure of a Hedge Matters: Lessons from the Metallgesellschaft Debacle,"</a> Journal of Applied Corporate Finance, 8(1).</li>
+              <li>Culp, C. &amp; Miller, M. (1995). <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1745-6622.1995.tb00263.x" target="_blank" rel="noopener noreferrer">"Metallgesellschaft and the Economics of Synthetic Storage,"</a> Journal of Applied Corporate Finance, 7(4).</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="kpi-heading">
+        <h2 id="kpi-heading" class="sr-only">Key figures for this scenario</h2>
+        <div class="kpi-row" id="kpiRow">
+          <div class="card stat-tile">
+            <span class="stat-label">Net total P&amp;L (12 mo.)</span>
+            <span class="stat-value accent skeleton" id="kpiNet">&nbsp;</span>
+            <span class="stat-sub">Roll P&amp;L + delivery P&amp;L, unhedged baseline</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Total roll P&amp;L</span>
+            <span class="stat-value skeleton" id="kpiRoll">&nbsp;</span>
+            <span class="stat-sub">Sum across all 12 months</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Total delivery P&amp;L</span>
+            <span class="stat-value skeleton" id="kpiDelivery">&nbsp;</span>
+            <span class="stat-sub">Sum across all 12 months</span>
+          </div>
+          <div class="card stat-tile">
+            <span class="stat-label">Scenarios profitable</span>
+            <span class="stat-value skeleton" id="kpiProfitShare">&nbsp;</span>
+            <span class="stat-sub">Of 420 price / hedge-ratio combinations</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="strategy-heading">
+        <h2 id="strategy-heading">Strategy Inputs</h2>
+        <p class="section-desc">Constants feeding the simulation, extracted from the source workbook. Volatility and LAR (Loss-at-Risk) come from a separate probability-distribution sheet out of scope for this build, and are frozen as constants here.</p>
+        <div class="card" style="padding: var(--sp-4)">
+          <div class="stat-box">
+            <div class="stat-box-item"><span class="k">Spot price</span><span class="v" id="statSpot">—</span></div>
+            <div class="stat-box-item"><span class="k">Next futures price</span><span class="v" id="statFutures">—</span></div>
+            <div class="stat-box-item"><span class="k">Monthly return</span><span class="v" id="statReturn">—</span></div>
+            <div class="stat-box-item"><span class="k">Avg. roll P&amp;L / bbl</span><span class="v" id="statSpread">—</span></div>
+            <div class="stat-box-item"><span class="k">Volatility (frozen)</span><span class="v" id="statVol">—</span></div>
+            <div class="stat-box-item"><span class="k">LAR (frozen)</span><span class="v" id="statLar">—</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="heatmap-heading">
+        <h2 id="heatmap-heading">Net P&amp;L Sensitivity: Hedge Ratio × Futures Price</h2>
+        <p class="section-desc">Each cell is the simulated net profit/loss for one hedge ratio (rows, 0.05–1.00) and futures price (columns, $75–$85). Blue is profitable, red is a loss — the dollar value on each tile carries the same information as the color.</p>
+        <div class="card chart-card full-width">
+          <div class="chart-card-head">
+            <div>
+              <h3>420-cell sensitivity heatmap</h3>
+              <p class="chart-caption">Scenario: original workbook snapshot</p>
+            </div>
+            <button class="table-toggle" id="heatmapTableToggle" type="button" aria-pressed="false">View as table</button>
+          </div>
+          <div id="heatmapWrap">
+            <div class="heatmap-with-axis">
+              <div class="heatmap-row-axis" id="heatmapRowAxis" aria-hidden="true"></div>
+              <div style="flex:1; min-width:0">
+                <div class="heatmap-axis-row" id="heatmapAxisRow" aria-hidden="true"></div>
+                <div class="heatmap-grid dense skeleton" id="heatmapGrid" style="min-height:340px"></div>
+              </div>
+            </div>
+            <div class="heat-scale">
+              <span>Loss</span>
+              <span class="heat-scale-bar diverging" aria-hidden="true"></span>
+              <span>Profit</span>
+            </div>
+          </div>
+          <div id="heatmapTableWrap" hidden></div>
+        </div>
+      </section>
+
+      <section class="dash-section" aria-labelledby="mg3d-heading">
+        <h2 id="mg3d-heading">3D Surface View</h2>
+        <p class="section-desc">The same 420 values as an extruded isometric surface — bar height is the magnitude of profit or loss. Supplementary to the heatmap and table above, which remain the primary way to read exact values.</p>
+        <div class="mg-3d-controls">
+          <button class="table-toggle" id="toggle3d" type="button" aria-pressed="false">Show 3D view</button>
+        </div>
+        <div class="mg-3d-wrap" id="mg3dWrap" hidden>
+          <canvas id="mg3dCanvas" role="img" aria-label="Isometric 3D surface of the same net profit and loss values shown in the heatmap above, extruded by magnitude and colored by profit or loss"></canvas>
+        </div>
+        <p class="mg-3d-caption">Decorative view of the heatmap data — see the table above for exact per-cell values.</p>
+      </section>
+
+      <section class="dash-section">
+        <div class="card notes-card">
+          <h3>About this simulation</h3>
+          <p>
+            <code>Front Price</code> for each of the 12 months was drawn once in the source workbook via
+            <code>NORM.INV(RAND(), Fixed Price, Volatility)</code> and frozen as this page's baseline
+            scenario — reloading the page does not redraw the random path. <code>Roll P&amp;L</code>,
+            <code>Total Roll P&amp;L</code>, <code>Delivery P&amp;L</code>, and <code>Total Delivery P&amp;L</code>
+            replicate the StacknRoll Strategy Analysis sheet's formulas exactly. The Hedge Ratio Analysis
+            grid (<code>RollProfit</code>, <code>LaR_h</code>, <code>ShortFall</code>, <code>FundingCost</code>,
+            <code>NetProfit</code>) and the Sensitivity Table's per-cell formula are reproduced the same way,
+            including the workbook's blank <code>Delivery</code> reference cell (which evaluates to $0 in the
+            source file and is kept that way here rather than "fixed").
+          </p>
+          <ul>
+            <li>Price Risk, Basis Risk, Liquidity Risk, and the Liquidity Squeeze Test sheets are separate probability-distribution exercises and are out of scope for this page; the two values they feed into this chain (Volatility, LAR) are frozen constants extracted from the source workbook.</li>
+            <li>All 420 cells are computed client-side from the same frozen inputs — nothing here is randomized on load or on interaction.</li>
+            <li>The scenario badge above exists so any future "generate a new path" control can't be mistaken for live or historical market data — this is one simulated draw, not a forecast.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card download-card">
+        <div class="download-copy">
+          <h3>Download the original workbook</h3>
+          <p>The full Excel risk analysis, including the Price Risk, Basis Risk, Liquidity Risk, and Liquidity Squeeze Test sheets not modeled on this page.</p>
+          <p class="download-meta">Metallgesellschaft_Risk_Analysis.xlsx · ~75 KB</p>
+        </div>
+        <a class="btn btn-download" href="../assets/downloads/Metallgesellschaft_Risk_Analysis.xlsx" download>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Metallgesellschaft_Risk_Analysis.xlsx
+        </a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-links">
+        <li><a href="mailto:griecoemiliano04@gmail.com">Email</a></li>
+        <li><a href="https://www.linkedin.com/in/emilianogrieco" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        <li><a href="https://github.com/Emig-123" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+      <p class="footer-note">&copy; <span id="footer-year"></span> Emiliano Grieco</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/charts.js"></script>
+  <script src="../assets/js/mgEngine.js"></script>
+  <script src="../assets/js/mg.js"></script>
+  <script>
+    document.getElementById("footer-year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
