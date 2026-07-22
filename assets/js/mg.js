@@ -49,10 +49,16 @@
     Viz.skeletonize(els.kpiDelivery, false);
     Viz.skeletonize(els.kpiProfitShare, false);
 
+    // Signed P&L figures: color follows the sign (red loss / teal gain).
+    // The formatted value keeps its "-" sign, so the meaning survives with
+    // color removed. profitableShare is a count share, not signed — left neutral.
+    function signClass(v) { return "stat-value " + (v >= 0 ? "positive" : "negative"); }
     els.kpiNet.textContent = fmtMoney(m.netTotalPnL);
-    els.kpiNet.className = "stat-value " + (m.netTotalPnL >= 0 ? "" : "");
+    els.kpiNet.className = signClass(m.netTotalPnL);
     els.kpiRoll.textContent = fmtMoney(m.totalRollPnL);
+    els.kpiRoll.className = signClass(m.totalRollPnL);
     els.kpiDelivery.textContent = fmtMoney(m.totalDeliveryPnL);
+    els.kpiDelivery.className = signClass(m.totalDeliveryPnL);
     els.kpiProfitShare.textContent = Viz.formatPct(s.profitableShare, 0);
 
     els.statSpot.textContent = "$" + c.spot.toFixed(2);

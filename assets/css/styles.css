@@ -9,10 +9,11 @@
   --surface: #fcfcfb;
   --surface-raised: #ffffff;
 
-  /* Ink */
+  /* Ink (neutral gray ramp — kept free of warm/cream cast so it never
+     competes with the blue accent) */
   --ink-primary: #0b0b0b;
-  --ink-secondary: #52514e;
-  --ink-muted: #898781;
+  --ink-secondary: #4b4c50;
+  --ink-muted: #85868b;
   --ink-on-accent: #ffffff;
 
   /* Structure */
@@ -64,6 +65,47 @@
   --status-serious: #ec835a;
   --status-critical: #d03b3b;
 
+  /* ------------------------------------------------------------------
+     Semantic role tokens — the canonical names for new work. Surface,
+     text and border roles alias the themed primitives above, so they
+     resolve to the correct value in light or dark automatically. The
+     three analytical accents (positive / warning / negative) carry
+     their own per-theme values further down for contrast.
+
+       accent-primary   blue — links, selected states, key metrics,
+                        chart emphasis, interactive controls
+       accent-positive  teal/green — favorable outcomes (used sparingly)
+       accent-warning   amber — analytical insight, interpretation,
+                        warnings, important context
+       accent-negative  red — negative values, losses, risk
+     ------------------------------------------------------------------ */
+  --background-primary: var(--page-bg);
+  --background-secondary: var(--surface);
+  --background-card: var(--surface);
+  --background-card-hover: var(--surface-raised);
+
+  --border-subtle: var(--border);
+  --border-emphasis: var(--border-strong);
+
+  --text-primary: var(--ink-primary);
+  --text-secondary: var(--ink-secondary);
+  --text-muted: var(--ink-muted);
+
+  --accent-primary: var(--accent);
+  --accent-primary-hover: var(--accent-strong);
+
+  /* Light-mode analytical accents (dark values overridden per theme) */
+  --accent-positive: #0f8a63;
+  --accent-warning: #9a6400;
+  --accent-negative: #c62b2b;
+
+  /* Ambient background field — decorative teal/blue "wave grid" over the
+     charcoal page. Carries no information; kept faint so content stays
+     legible. --bg-field-opacity is the light-mode default; dark raises it. */
+  --bg-grid-1: rgba(96, 205, 205, 0.18);   /* teal verticals */
+  --bg-grid-2: rgba(96, 160, 240, 0.17);   /* blue horizontals */
+  --bg-field-opacity: 0.45;
+
   /* Spacing (8px unit, 4px fine) */
   --sp-1: 0.25rem;  /* 4  */
   --sp-2: 0.5rem;   /* 8  */
@@ -107,8 +149,8 @@
     --surface-raised: #201f1e;
 
     --ink-primary: #ffffff;
-    --ink-secondary: #c3c2b7;
-    --ink-muted: #898781;
+    --ink-secondary: #c6c7ca;
+    --ink-muted: #8b8c91;
     --ink-on-accent: #ffffff;
 
     --border: rgba(255, 255, 255, 0.10);
@@ -120,6 +162,12 @@
     --accent-strong: #86b6ef;
     --accent-wash: rgba(57, 135, 229, 0.14);
     --accent-wash-strong: rgba(57, 135, 229, 0.24);
+
+    --accent-positive: #2bb98a;
+    --accent-warning: #f5b53f;
+    --accent-negative: #f0726d;
+
+    --bg-field-opacity: 1;
 
     --series-1: #3987e5;
     --series-2: #008300;
@@ -147,8 +195,8 @@
   --surface: #1a1a19;
   --surface-raised: #201f1e;
   --ink-primary: #ffffff;
-  --ink-secondary: #c3c2b7;
-  --ink-muted: #898781;
+  --ink-secondary: #c6c7ca;
+  --ink-muted: #8b8c91;
   --ink-on-accent: #ffffff;
   --border: rgba(255, 255, 255, 0.10);
   --border-strong: rgba(255, 255, 255, 0.18);
@@ -158,6 +206,10 @@
   --accent-strong: #86b6ef;
   --accent-wash: rgba(57, 135, 229, 0.14);
   --accent-wash-strong: rgba(57, 135, 229, 0.24);
+  --accent-positive: #2bb98a;
+  --accent-warning: #f5b53f;
+  --accent-negative: #f0726d;
+  --bg-field-opacity: 1;
   --series-1: #3987e5;
   --series-2: #008300;
   --series-3: #d55181;
@@ -195,6 +247,53 @@ body {
   background: var(--page-bg);
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Ambient background field
+   Two fixed, decorative layers behind all content:
+     body::before  — a perspective grid plane (blueprint lines)
+     body::after   — faint teal sine "waves" over the grid
+   The scroll "warp" is driven entirely by transform on CSS custom properties
+   (--bg-rx / --bg-ty / --bg-wy) set by assets/js/bg.js on rAF, so scrolling
+   only re-composites (no repaint). With no JS, or under reduced-motion, the
+   properties stay at their defaults and the field is simply a static grid.
+   Purely presentational: pointer-events:none, sits at z-index:-1, and every
+   text run renders above it (content panels use solid --surface backgrounds).
+   ========================================================================== */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -25vmax;                 /* oversize so tilt/parallax never bares an edge */
+  z-index: -1;
+  pointer-events: none;
+  opacity: var(--bg-field-opacity, 1);
+  will-change: transform;
+  -webkit-mask-image: radial-gradient(130% 100% at 50% 32%, #000 30%, rgba(0,0,0,0.35) 68%, transparent 100%);
+          mask-image: radial-gradient(130% 100% at 50% 32%, #000 30%, rgba(0,0,0,0.35) 68%, transparent 100%);
+}
+
+/* Grid plane — tilted slightly and warped by scroll via --bg-rx / --bg-ty.
+   Vertical offset wraps at the 52px cell size so parallax stays seamless. */
+body::before {
+  background-image:
+    repeating-linear-gradient(0deg,  var(--bg-grid-2) 0 1px, transparent 1px 52px),
+    repeating-linear-gradient(90deg, var(--bg-grid-1) 0 1px, transparent 1px 52px);
+  transform:
+    perspective(1200px)
+    rotateX(var(--bg-rx, 0deg))
+    translate3d(0, var(--bg-ty, 0px), 0)
+    scale(1.12);
+}
+
+/* Wave overlay — tileable teal sine, drifting vertically with --bg-wy
+   (wrapped to the 60px tile height, so the drift is seamless). */
+body::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath d='M0 30 C 20 21 40 21 60 30 S 100 39 120 30' fill='none' stroke='%2361d1c9' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 120px 60px;
+  opacity: calc(var(--bg-field-opacity, 1) * 0.4);
+  transform: translate3d(0, var(--bg-wy, 0px), 0);
 }
 
 img, picture, svg { display: block; max-width: 100%; }
@@ -682,7 +781,11 @@ table { border-collapse: collapse; width: 100%; }
   color: var(--ink-secondary);
 }
 
-.stat-value.accent { color: var(--accent); }
+.stat-value.accent { color: var(--accent-primary); }
+/* Signed figures: color carries the sign, and the numeric sign/label
+   carries the same information for anyone who can't perceive the hue. */
+.stat-value.positive { color: var(--accent-positive); }
+.stat-value.negative { color: var(--accent-negative); }
 
 /* ==========================================================================
    Chart cards
@@ -1055,9 +1158,11 @@ table { border-collapse: collapse; width: 100%; }
 /* ==========================================================================
    Key takeaway callout
    ========================================================================== */
+/* Amber marks analytical interpretation / important context, distinct
+   from the blue used for interactive and metric emphasis. */
 .key-takeaway {
   padding: var(--sp-4) var(--sp-5);
-  border-left: 4px solid var(--accent);
+  border-left: 4px solid var(--accent-warning);
   font-size: var(--fs-sm);
   color: var(--ink-secondary);
 }
