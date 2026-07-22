@@ -13,7 +13,10 @@
 
   <header class="site-header">
     <div class="container">
-      <a class="brand" href="../index.html">Emiliano Grieco</a>
+      <a class="brand" href="../index.html">
+        <span class="brand-name">Grieco Insights</span>
+        <span class="brand-by">by Emiliano Grieco</span>
+      </a>
       <nav class="main-nav" aria-label="Primary">
         <ul>
           <li><a href="../index.html">Home</a></li>
@@ -54,40 +57,54 @@
         <div class="card key-takeaway">
           <h2 id="takeaway-heading">Key Takeaway</h2>
           <p>
-            Metallgesellschaft's US subsidiary, MG Refining &amp; Marketing (MGRM), sold long-dated
-            fixed-price fuel supply contracts to customers — some running 5 to 10 years — and hedged
-            that exposure with a "stack-and-roll" program: buying large stacks of short-dated NYMEX
-            futures and rolling them forward every month, rather than using illiquid long-dated
-            contracts. At its peak the position was reportedly large enough to represent a meaningful
-            share of total open interest in crude and heating oil futures, which made it hard to
-            unwind quickly once trouble started. The strategy depended on the futures curve staying
-            in backwardation (near-term prices above deferred prices), so each monthly roll would
-            produce a small profit.
+            MGRM hedged long-dated fixed-price fuel contracts with a "stack-and-roll" stack of
+            short-dated futures — a hedge that was right in size but wrong in timing. When oil fell
+            in late 1993 and the futures curve flipped from backwardation into contango, every
+            monthly roll lost money and triggered enormous cash margin calls, while the offsetting
+            gains on the delivery contracts were still years away. The position was unwound in
+            December 1993 at a reported loss of roughly $1.3 billion — though economists still debate
+            whether the flaw was the hedge's design or the panicked decision to liquidate it. The
+            heatmap below shows the same tension: outcomes swing with both the assumed futures price
+            and the hedge ratio.
           </p>
-          <p>
-            When oil prices fell sharply in late 1993 and the curve flipped into contango, the
-            stack-and-roll program lost money on every roll — and because futures are marked to
-            market daily, MGRM faced enormous margin calls in cash immediately, while the offsetting
-            gains on its fixed-price delivery contracts wouldn't be realized for years. In other
-            words, the hedge was sized and timed for the wrong horizon: a short-dated instrument
-            standing in for a long-dated exposure. That mismatch turned a paper hedge into a real
-            cash crisis, and Metallgesellschaft's supervisory board unwound the position in December
-            1993 at a widely reported loss of roughly $1.3 billion (other estimates run higher once
-            related contract cancellations are included).
-          </p>
-          <p>
-            Economists still disagree on how to characterize it. Mello &amp; Parsons (1995) argue the
-            maturity mismatch between the short-dated hedge and the long-dated exposure was itself
-            the core design flaw — in effect, a large directional bet on the shape of the futures
-            curve. Culp &amp; Miller (1995) counter that the hedge ratio was reasonable and the program
-            was fundamentally sound; the real mistake was the supervisory board panicking and
-            liquidating the position at the worst possible time, converting a temporary cash-flow
-            squeeze into a permanent loss. Either way, the case is a standard illustration of how a
-            hedge that looks right in aggregate size but wrong in timing can become the source of the
-            risk it was meant to remove — the heatmap below shows the same tension: outcomes are
-            sensitive to both the assumed futures price and the hedge ratio chosen, and a larger
-            hedge does not uniformly reduce exposure, it changes what you're exposed to.
-          </p>
+          <details class="takeaway-more">
+            <summary>Read the full background</summary>
+            <p>
+              Metallgesellschaft's US subsidiary, MG Refining &amp; Marketing (MGRM), sold long-dated
+              fixed-price fuel supply contracts to customers — some running 5 to 10 years — and hedged
+              that exposure with a "stack-and-roll" program: buying large stacks of short-dated NYMEX
+              futures and rolling them forward every month, rather than using illiquid long-dated
+              contracts. At its peak the position was reportedly large enough to represent a meaningful
+              share of total open interest in crude and heating oil futures, which made it hard to
+              unwind quickly once trouble started. The strategy depended on the futures curve staying
+              in backwardation (near-term prices above deferred prices), so each monthly roll would
+              produce a small profit.
+            </p>
+            <p>
+              When oil prices fell sharply in late 1993 and the curve flipped into contango, the
+              stack-and-roll program lost money on every roll — and because futures are marked to
+              market daily, MGRM faced enormous margin calls in cash immediately, while the offsetting
+              gains on its fixed-price delivery contracts wouldn't be realized for years. In other
+              words, the hedge was sized and timed for the wrong horizon: a short-dated instrument
+              standing in for a long-dated exposure. That mismatch turned a paper hedge into a real
+              cash crisis, and Metallgesellschaft's supervisory board unwound the position in December
+              1993 at a widely reported loss of roughly $1.3 billion (other estimates run higher once
+              related contract cancellations are included).
+            </p>
+            <p>
+              Economists still disagree on how to characterize it. Mello &amp; Parsons (1995) argue the
+              maturity mismatch between the short-dated hedge and the long-dated exposure was itself
+              the core design flaw — in effect, a large directional bet on the shape of the futures
+              curve. Culp &amp; Miller (1995) counter that the hedge ratio was reasonable and the program
+              was fundamentally sound; the real mistake was the supervisory board panicking and
+              liquidating the position at the worst possible time, converting a temporary cash-flow
+              squeeze into a permanent loss. Either way, the case is a standard illustration of how a
+              hedge that looks right in aggregate size but wrong in timing can become the source of the
+              risk it was meant to remove — the heatmap below shows the same tension: outcomes are
+              sensitive to both the assumed futures price and the hedge ratio chosen, and a larger
+              hedge does not uniformly reduce exposure, it changes what you're exposed to.
+            </p>
+          </details>
           <div class="takeaway-sources">
             Further reading:
             <ul>

@@ -415,13 +415,23 @@ table { border-collapse: collapse; width: 100%; }
 }
 
 .brand {
-  font-weight: 700;
-  font-size: var(--fs-md);
+  display: inline-flex;
+  flex-direction: column;
+  line-height: 1.12;
   color: var(--ink-primary);
   text-decoration: none;
+}
+.brand-name {
+  font-weight: 700;
+  font-size: var(--fs-md);
   letter-spacing: -0.01em;
 }
-.brand:hover { color: var(--ink-primary); }
+.brand-by {
+  font-weight: 600;
+  font-size: var(--fs-xs);
+  color: var(--ink-muted);
+}
+.brand:hover .brand-name { color: var(--accent); }
 
 .main-nav ul {
   display: flex;
@@ -685,7 +695,7 @@ table { border-collapse: collapse; width: 100%; }
   margin-bottom: var(--sp-2);
 }
 
-.hero h1 { max-width: 18ch; }
+.hero h1 { max-width: 22ch; }
 
 .hero-bio {
   margin-top: var(--sp-4);
@@ -1259,6 +1269,29 @@ table { border-collapse: collapse; width: 100%; }
 .key-takeaway h2 { font-size: var(--fs-lg); color: var(--ink-primary); margin-bottom: var(--sp-3); }
 .key-takeaway p { max-width: none; margin-bottom: var(--sp-3); }
 .key-takeaway p:last-of-type { margin-bottom: 0; }
+.takeaway-more { margin-top: var(--sp-2); }
+.takeaway-more summary {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--accent);
+  list-style: none;
+  padding: var(--sp-1) 0;
+  min-height: 32px;
+}
+.takeaway-more summary::-webkit-details-marker { display: none; }
+.takeaway-more summary::after {
+  content: "▾";
+  font-size: 0.8em;
+  transition: transform var(--transition-fast);
+}
+.takeaway-more[open] summary::after { transform: rotate(180deg); }
+.takeaway-more summary:hover { color: var(--accent-strong); }
+.takeaway-more[open] summary { margin-bottom: var(--sp-2); }
+
 .key-takeaway .takeaway-sources {
   margin-top: var(--sp-3);
   font-size: var(--fs-xs);
