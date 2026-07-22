@@ -102,9 +102,13 @@
   /* Ambient background field — decorative teal/blue "wave grid" over the
      charcoal page. Carries no information; kept faint so content stays
      legible. --bg-field-opacity is the light-mode default; dark raises it. */
-  --bg-grid-1: rgba(96, 205, 205, 0.18);   /* teal verticals */
-  --bg-grid-2: rgba(96, 160, 240, 0.17);   /* blue horizontals */
+  --bg-grid-1: rgba(96, 205, 205, 0.08);    /* teal verticals */
+  --bg-grid-2: rgba(96, 160, 240, 0.075);   /* blue horizontals */
   --bg-field-opacity: 0.45;
+  /* Spherical silhouette shared by both field layers — a contained circle
+     (vmin-bounded so its rounded edge is always visible) sitting right of
+     the hero copy. */
+  --bg-orb-mask: radial-gradient(43vmin 43vmin at 61% 42%, #000 0 60%, rgba(0,0,0,0.35) 80%, transparent 100%);
 
   /* Spacing (8px unit, 4px fine) */
   --sp-1: 0.25rem;  /* 4  */
@@ -251,13 +255,16 @@ body {
 
 /* ==========================================================================
    Ambient background field
-   Two fixed, decorative layers behind all content:
-     body::before  — a perspective grid plane (blueprint lines)
-     body::after   — faint teal sine "waves" over the grid
-   The scroll "warp" is driven entirely by transform on CSS custom properties
-   (--bg-rx / --bg-ty / --bg-wy) set by assets/js/bg.js on rAF, so scrolling
-   only re-composites (no repaint). With no JS, or under reduced-motion, the
-   properties stay at their defaults and the field is simply a static grid.
+   Two fixed, decorative layers behind all content, composed as a shaded
+   "sphere" of grid + waves floating on the charcoal page:
+     body::before  — a faint, near-static blueprint grid, radial-masked into
+                     an orb, shaded (highlight + inner rim) and given a soft
+                     drop-shadow so it reads as a rounded volume with depth.
+     body::after   — faint teal sine "waves" over the orb, drifting very
+                     slowly on their own (time-based, not scroll-driven).
+   The grid carries only a whisper of scroll parallax via --bg-ty (set by
+   assets/js/bg.js on rAF — composite only, no repaint). With no JS or under
+   reduced-motion the grid is fully static and the wave drift freezes.
    Purely presentational: pointer-events:none, sits at z-index:-1, and every
    text run renders above it (content panels use solid --surface backgrounds).
    ========================================================================== */
@@ -265,35 +272,43 @@ body::before,
 body::after {
   content: "";
   position: fixed;
-  inset: -25vmax;                 /* oversize so tilt/parallax never bares an edge */
+  inset: -12vmax;                 /* room for the drop-shadow + slow wave drift */
   z-index: -1;
   pointer-events: none;
   opacity: var(--bg-field-opacity, 1);
-  will-change: transform;
-  -webkit-mask-image: radial-gradient(130% 100% at 50% 32%, #000 30%, rgba(0,0,0,0.35) 68%, transparent 100%);
-          mask-image: radial-gradient(130% 100% at 50% 32%, #000 30%, rgba(0,0,0,0.35) 68%, transparent 100%);
+  /* Circular mask turns the flat grid into an orb; the same mask on both
+     layers keeps grid and waves aligned to one spherical silhouette. */
+  -webkit-mask-image: var(--bg-orb-mask);
+          mask-image: var(--bg-orb-mask);
 }
 
-/* Grid plane — tilted slightly and warped by scroll via --bg-rx / --bg-ty.
-   Vertical offset wraps at the 52px cell size so parallax stays seamless. */
+/* Grid orb — faint blueprint lines, shaded for volume, with a drop-shadow for
+   depth. Near-static: only a small scroll parallax via --bg-ty (pure
+   translate, so the cached drop-shadow just moves rather than re-rendering). */
 body::before {
   background-image:
+    radial-gradient(43vmin 43vmin at 61% 42%, transparent 53%, rgba(128, 228, 224, 0.13) 60%, transparent 67%),
+    radial-gradient(30vmin 30vmin at 53% 31%, rgba(128, 228, 224, 0.20), transparent 62%),
+    radial-gradient(43vmin 43vmin at 64% 50%, transparent 44%, rgba(0, 0, 0, 0.62) 76%),
     repeating-linear-gradient(0deg,  var(--bg-grid-2) 0 1px, transparent 1px 52px),
     repeating-linear-gradient(90deg, var(--bg-grid-1) 0 1px, transparent 1px 52px);
-  transform:
-    perspective(1200px)
-    rotateX(var(--bg-rx, 0deg))
-    translate3d(0, var(--bg-ty, 0px), 0)
-    scale(1.12);
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.62));
+  transform: translate3d(0, var(--bg-ty, 0px), 0);
+  will-change: transform;
 }
 
-/* Wave overlay — tileable teal sine, drifting vertically with --bg-wy
-   (wrapped to the 60px tile height, so the drift is seamless). */
+/* Wave overlay — tileable teal sine, drifting one tile (60px) over 48s so the
+   loop is seamless. Frozen by the global reduced-motion rule. */
 body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cpath d='M0 30 C 20 21 40 21 60 30 S 100 39 120 30' fill='none' stroke='%2361d1c9' stroke-width='1'/%3E%3C/svg%3E");
   background-size: 120px 60px;
-  opacity: calc(var(--bg-field-opacity, 1) * 0.4);
-  transform: translate3d(0, var(--bg-wy, 0px), 0);
+  opacity: calc(var(--bg-field-opacity, 1) * 0.38);
+  animation: bg-wave-drift 48s linear infinite;
+  will-change: transform;
+}
+@keyframes bg-wave-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(0, -60px, 0); }
 }
 
 img, picture, svg { display: block; max-width: 100%; }
@@ -579,12 +594,87 @@ table { border-collapse: collapse; width: 100%; }
   gap: var(--sp-1);
 }
 
+/* Featured project — the primary call to attention. Accent border + a faint
+   accent wash + a badge lift it above the other cards without changing size. */
+.project-card.featured {
+  border-color: var(--accent);
+  /* Accent wash kept in the bottom-right corner so the accent-colored badge
+     and kicker sit on the plain surface and keep their contrast. */
+  background:
+    radial-gradient(125% 120% at 100% 108%, var(--accent-wash) 0%, transparent 55%),
+    var(--surface);
+}
+.project-card.featured:hover { border-color: var(--accent-strong); }
+
+.featured-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  align-self: flex-start;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 0.2rem var(--sp-2);
+  border-radius: 999px;
+}
+.featured-badge svg { flex-shrink: 0; }
+
+/* Locked slot — an honest placeholder for an upcoming project. It is a plain
+   <div> (not a link), styled distinctly so it never reads as clickable. */
+.project-card--locked {
+  cursor: default;
+  border-style: dashed;
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+.project-card--locked:hover { border-color: var(--border-strong); transform: none; }
+.project-card--locked .project-card-kicker { color: var(--ink-muted); }
+.project-card--locked h3 { color: var(--ink-secondary); }
+.project-card--locked p { color: var(--ink-muted); }
+.locked-cta {
+  margin-top: auto;
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  color: var(--ink-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.lock-icon { flex-shrink: 0; }
+
 /* ==========================================================================
    Hero
    ========================================================================== */
 .hero {
   padding-block: var(--sp-7) var(--sp-6);
+  position: relative;
+  isolation: isolate;
 }
+
+/* Dark gradient scrim behind the hero text: anchors dark at the left where
+   the copy sits and fades out to the right, letting the grid orb show through
+   the open side while keeping the text on a deep, high-contrast ground. */
+.hero::before {
+  content: "";
+  position: absolute;
+  /* No bottom/heavy bleed: because .hero is positioned it paints above the
+     following (static) section, so a downward bleed would dim that heading. */
+  inset: -16% -28% 0 -42%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(75% 125% at 22% 42%,
+    rgba(5, 7, 10, 0.92) 0%,
+    rgba(5, 7, 10, 0.6) 42%,
+    rgba(5, 7, 10, 0) 72%);
+}
+@media (prefers-color-scheme: light) {
+  :root:where(:not([data-theme="dark"])) .hero::before { display: none; }
+}
+:root[data-theme="light"] .hero::before { display: none; }
 
 .hero-kicker {
   font-size: var(--fs-sm);
